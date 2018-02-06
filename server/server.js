@@ -36,7 +36,7 @@ app.use(function(req, res, next) {
 });
 
 //Make express look in the public directory for assets
-app.use(express.static(__dirname + '/public'));
+app.use(express.static(__dirname + '/server/public'));
 
 //lets make a simple get request to get some sort of response from our server
 app.get('/', (req, res) => {
