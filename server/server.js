@@ -3,6 +3,7 @@ const express = require('express');
 const bodyParser = require('body-parser');
 const { Item } = require('./models/item');
 const { User } = require('./models/user');
+const path = require('path');
 
 const app = express(); //App is now an instance of our express server
 const PORT = process.env.PORT || 3001;
@@ -36,10 +37,8 @@ app.use(function(req, res, next) {
 });
 
 //Make express look in the public directory for assets
-app.use(express.static(__dirname + '/public'));
+app.use(express.static(path.join(__dirname,'public')));
 
-const path = __dirname + '/public';
-console.log(path);
 
 //lets make a simple get request to get some sort of response from our server
 app.get('/', (req, res) => {
