@@ -66,6 +66,9 @@ app.post('/email', (req, res) => {
       }
       res.status(200).send(user)
     })
+    .catch(err => {
+      res.status(404).send(err)
+    })
 })
 
 //Save new user document in collection User
