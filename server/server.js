@@ -16,7 +16,7 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
 // Add headers
-app.use(function(req, res, next) {
+app.use(function (req, res, next) {
   // Website you wish to allow to connect
   res.setHeader('Access-Control-Allow-Origin', '*');
   // Request methods you wish to allow
@@ -37,7 +37,7 @@ app.use(function(req, res, next) {
 });
 
 //Make express look in the public directory for assets
-app.use(express.static(path.join(__dirname,'public')));
+app.use(express.static(path.join(__dirname, 'public')));
 
 
 //lets make a simple get request to get some sort of response from our server
@@ -55,6 +55,18 @@ app.get('/users', (req, res) => {
       res.status(400).send(err);
     });
 });
+
+//Get specific document using email
+app.post('/email', (req, res) => {
+  User.findOne({ 'email': req.body.email })
+    .then(user => {
+      if (!user) {
+        c
+        return res.status(404).send('No user found');
+      }
+      res.status(200).send(user)
+    })
+})
 
 //Save new user document in collection User
 app.post('/users', (req, res) => {
