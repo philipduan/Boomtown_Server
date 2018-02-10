@@ -61,10 +61,9 @@ app.post('/email', (req, res) => {
   User.findOne({ 'email': req.body.email })
     .then(user => {
       if (!user) {
-        c
         return res.status(404).send('No user found');
       }
-      res.status(200).send(user)
+      res.status(200).send(user._id);
     })
     .catch(err => {
       res.status(404).send(err)
@@ -76,8 +75,8 @@ app.post('/users', (req, res) => {
   const user = new User(req.body);
   user
     .save()
-    .then(user => {
-      res.status(200).send('Successfuly saved');
+    .then(() => {
+      res.status(200).send('"Successfuly saved"');
     })
     .catch(err => {
       res.status(400).send(err);
