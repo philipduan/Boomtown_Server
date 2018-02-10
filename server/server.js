@@ -46,10 +46,10 @@ app.get('/', (req, res) => {
 });
 
 //Get all document from the collection User
-app.get('/users', (req, res) => {
-  User.find({})
-    .then(users => {
-      res.status(200).send(users);
+app.get('/users/:id', (req, res) => {
+  User.findById({ _id: req.params.id })
+    .then(user => {
+      res.status(200).send(user);
     })
     .catch(err => {
       res.status(400).send(err);
