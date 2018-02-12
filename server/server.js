@@ -130,7 +130,8 @@ app.patch('/items', (req, res) => {
 
 app.patch('/update', (req, res) => {
   const { id, itemsOwned, itemsBorrowed } = req.body;
-  Item.findByIdAndUpdate(
+  console.log('body', req.body)
+  User.findByIdAndUpdate(
     { _id: id },
     {
       $set: {
