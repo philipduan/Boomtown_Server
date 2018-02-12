@@ -108,6 +108,7 @@ app.post('/items', (req, res) => {
     });
 });
 
+//Update document of Item collection == item borrowed or returned by a user
 app.patch('/items', (req, res) => {
   Item.findByIdAndUpdate(
     { _id: req.body.id },
@@ -125,6 +126,23 @@ app.patch('/items', (req, res) => {
     .catch(err => {
       res.status(400).send(err);
     });
+});
+
+//Delete document of Item collection == current user can delete their owned item
+app.delete('/items', (req, res) => {
+  Item.findById({ _id: req.body.id }).then(item => {
+    if (!item) {
+      return res.status(404).send('No parent with that ID found');
+    } else {
+      Item.findOneAndRemove({ _id: req.body.id })
+        .then(item => {
+          res.status(200).send(`Successfuly deleted ${item.title}`);
+        })
+        .catch(err => {
+          res.status(400).send(err);
+        });
+    }
+  });
 });
 
 app.listen(PORT, () => {
