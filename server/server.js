@@ -136,7 +136,7 @@ app.delete('/items', (req, res) => {
     } else {
       Item.findOneAndRemove({ _id: req.body.id })
         .then(item => {
-          res.status(200).send(`Successfuly deleted ${item.title}`);
+          res.status(200).send(`'Successfuly deleted ${item.title}'`);
         })
         .catch(err => {
           res.status(400).send(err);
