@@ -13,7 +13,15 @@ const UserSchema = new Schema({
   email: {
     type: String,
     required: [true, 'Please enter an email adress']
-  }
+  },
+  itemsOwned: [{
+    type: Schema.Types.ObjectId,
+    ref: 'user'
+  }],
+  itemsBorrowed: [{
+    type: Schema.Types.ObjectId,
+    ref: 'user'
+  }]
 });
 
 const User = mongoose.model('user', UserSchema);

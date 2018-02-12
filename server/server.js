@@ -45,7 +45,7 @@ app.get('/', (req, res) => {
   res.send('Hello World');
 });
 
-//Get all document from the collection User
+//Get specific document from the collection User
 app.get('/users/:id', (req, res) => {
   User.findById({ _id: req.params.id })
     .then(user => {
@@ -128,6 +128,26 @@ app.patch('/items', (req, res) => {
     });
 });
 
+app.patch('/update', (req, res) => {
+  const { id, itemsOwned, itemsBorrowed } = req.body;
+  Item.findByIdAndUpdate(
+    { _id: id },
+    {
+      $set: {
+        itemsOwned,
+        itemsBorrowed
+      }
+    },
+    { new: true }
+  )
+    .then(item => {
+      res.status(200).send(item);
+    })
+    .catch(err => {
+      res.status(400).send(err);
+    });
+})
+
 //Delete document of Item collection == current user can delete their owned item
 app.delete('/items', (req, res) => {
   Item.findById({ _id: req.body.id }).then(item => {
@@ -144,6 +164,7 @@ app.delete('/items', (req, res) => {
     }
   });
 });
+
 
 app.listen(PORT, () => {
   console.log(`Server started on port ${PORT}`);
