@@ -16,11 +16,11 @@ const UserSchema = new Schema({
   },
   itemsOwned: [{
     type: Schema.Types.ObjectId,
-    ref: 'user'
+    ref: 'item'
   }],
   itemsBorrowed: [{
     type: Schema.Types.ObjectId,
-    ref: 'user'
+    ref: 'item'
   }]
 });
 

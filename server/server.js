@@ -48,9 +48,10 @@ app.get('/', (req, res) => {
 //Get specific document from the collection User
 app.get('/users/:id', (req, res) => {
   User.findById({ _id: req.params.id })
-    .popuplate('itemsOwned')
+    .populate('itemsOwned')
     .populate('itemsBorrowed')
     .then(user => {
+      console.log(user);
       res.status(200).send(user);
     })
     .catch(err => {
