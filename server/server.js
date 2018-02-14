@@ -60,12 +60,11 @@ app.get('/users', (req, res) => {
 app.get('/users/:id', (req, res) => {
   User.findById({ _id: req.params.id })
     .populate({
-      path: 'itemsOwned',
+      path: 'itemsBorrowed itemsOwned',
       populate: {
         path: 'itemowner borrower',
       }
     })
-    .populate('itemsBorrowed')
     .then(user => {
       res.status(200).send(user);
     })
@@ -119,7 +118,11 @@ app.post('/items', (req, res) => {
   item
     .save()
     .then(item => {
-      res.status(200).send('Successfully saved');
+      User.findByIdAndUpdate({ _id: item.itemowner }, { $push: { itemsOwned: item._id } }, { new: true })
+        .then(user => {
+          res.status(200).send('Successfully saved');
+        })
+        .catch(err => { res.status(400).send(err); })
     })
     .catch(err => {
       res.status(400).send(err);
@@ -128,27 +131,67 @@ app.post('/items', (req, res) => {
 
 //Update document of Item collection == item borrowed or returned by a user
 app.patch('/items', (req, res) => {
-  Item.findByIdAndUpdate(
-    { _id: req.body.id },
-    {
-      $set: {
-        available: req.body.available,
-        borrower: req.body.borrower
-      }
-    },
-    { new: true }
-  )
-    .then(item => {
-      res.status(200).send(item);
-    })
-    .catch(err => {
-      res.status(400).send(err);
-    });
+  const { id, available, borrower } = req.body;
+  if (available) {
+    Promise.all([
+      Item.findByIdAndUpdate(
+        { _id: id },
+        {
+          $set: {
+            available: available,
+            borrower: null
+          }
+        },
+        { new: true }
+      ),
+      User.findByIdAndUpdate(
+        { _id: borrower },
+        {
+          $pull: {
+            itemsBorrowed: id
+          }
+        },
+        { new: true }
+      )
+    ])
+      .then(user => {
+        res.status(200).send(user);
+      })
+      .catch(err => {
+        res.status(400).send(err);
+      });
+  } else {
+    Promise.all([
+      Item.findByIdAndUpdate(
+        { _id: id },
+        {
+          $set: {
+            available: available,
+            borrower: borrower,
+          }
+        },
+      ),
+      User.findByIdAndUpdate(
+        { _id: borrower },
+        {
+          $push: {
+            itemsBorrowed: id
+          }
+        },
+        { new: true }
+      )
+    ])
+      .then(user => {
+        res.status(200).send(user);
+      })
+      .catch(err => {
+        res.status(400).send(err);
+      });
+  }
 });
 
 app.patch('/update', (req, res) => {
   const { id, itemsOwned, itemsBorrowed } = req.body;
-  console.log('body', req.body)
   User.findByIdAndUpdate(
     { _id: id },
     {
@@ -175,7 +218,11 @@ app.delete('/items', (req, res) => {
     } else {
       Item.findOneAndRemove({ _id: req.body.id })
         .then(item => {
-          res.status(200).send(`"Successfuly deleted ${item.title}"`);
+          User.findByIdAndUpdate({ _id: item.itemowner }, { $pull: { itemsOwned: item._id } }, { new: true })
+            .then(user => {
+              res.status(200).send('"Successfully saved"');
+            })
+            .catch(err => { res.status(400).send(err); })
         })
         .catch(err => {
           res.status(400).send(err);
