@@ -190,25 +190,25 @@ app.patch('/items', (req, res) => {
   }
 });
 
-app.patch('/update', (req, res) => {
-  const { id, itemsOwned, itemsBorrowed } = req.body;
-  User.findByIdAndUpdate(
-    { _id: id },
-    {
-      $set: {
-        itemsOwned,
-        itemsBorrowed
-      }
-    },
-    { new: true }
-  )
-    .then(item => {
-      res.status(200).send(item);
-    })
-    .catch(err => {
-      res.status(400).send(err);
-    });
-})
+// app.patch('/update', (req, res) => {
+//   const { id, itemsOwned, itemsBorrowed } = req.body;
+//   User.findByIdAndUpdate(
+//     { _id: id },
+//     {
+//       $set: {
+//         itemsOwned,
+//         itemsBorrowed
+//       }
+//     },
+//     { new: true }
+//   )
+//     .then(item => {
+//       res.status(200).send(item);
+//     })
+//     .catch(err => {
+//       res.status(400).send(err);
+//     });
+// })
 
 //Delete document of Item collection == current user can delete their owned item
 app.delete('/items', (req, res) => {
