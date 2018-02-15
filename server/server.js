@@ -132,7 +132,7 @@ app.post('/items', (req, res) => {
 //Update document of Item collection == item borrowed or returned by a user
 app.patch('/items', (req, res) => {
   const { id, available, borrower } = req.body;
-  if (available) {
+  if (available) { //User return the borrowed item
     Promise.all([
       Item.findByIdAndUpdate(
         { _id: id },
@@ -160,7 +160,7 @@ app.patch('/items', (req, res) => {
       .catch(err => {
         res.status(400).send(err);
       });
-  } else {
+  } else { //User borrow an item
     Promise.all([
       Item.findByIdAndUpdate(
         { _id: id },
